@@ -5,13 +5,12 @@ de constelaciones de la Unión Astronómica Internacional (IAU), exportando los 
 optimizados para inferencia astrométrica y visualización web.
 """
 
-import gzip
+import csv
 import io
 import json
-from pathlib import Path
-import sys
+import math
 import urllib.request
-import csv
+from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = BASE_DIR / "data"
@@ -157,17 +156,34 @@ def procesar_constelaciones() -> list[dict]:
         if not segmentos:
             continue
 
-        # Calcular centroide aproximado en RA y Dec para etiquetado
-        ra_sum = sum(p[0][0] + p[1][0] for p in segmentos)
-        dec_sum = sum(p[0][1] + p[1][1] for p in segmentos)
-        n_puntos = len(segmentos) * 2
+        # Calcular centroide esférico exacto mediante proyección en vectores 3D (evita el problema del meridiano 0h/24h)
+        x_sum, y_sum, z_sum = 0.0, 0.0, 0.0
+        todos_puntos = []
+        for seg in segmentos:
+            todos_puntos.extend([seg[0], seg[1]])
+
+        for ra_h, dec_deg in todos_puntos:
+            ra_rad = math.radians(ra_h * 15.0)
+            dec_rad = math.radians(dec_deg)
+            x_sum += math.cos(dec_rad) * math.cos(ra_rad)
+            y_sum += math.cos(dec_rad) * math.sin(ra_rad)
+            z_sum += math.sin(dec_rad)
+
+        r_xy = math.hypot(x_sum, y_sum)
+        dec_c_rad = math.atan2(z_sum, r_xy)
+        ra_c_rad = math.atan2(y_sum, x_sum)
+        if ra_c_rad < 0:
+            ra_c_rad += 2.0 * math.pi
+
+        ra_c = round((math.degrees(ra_c_rad) / 15.0) % 24.0, 4)
+        dec_c = round(math.degrees(dec_c_rad), 4)
 
         constelaciones.append({
             "id": cid,
             "nombre_es": meta["nombre_es"],
             "nombre_en": meta["nombre_en"],
             "nombre_latin": meta["nombre_latin"],
-            "centroide": [round(ra_sum / n_puntos, 4), round(dec_sum / n_puntos, 4)],
+            "centroide": [ra_c, dec_c],
             "lineas": segmentos,
         })
 

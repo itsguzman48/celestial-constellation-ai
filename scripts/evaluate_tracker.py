@@ -6,9 +6,9 @@ de las 88 constelaciones oficiales de la IAU.
 """
 
 import json
-from pathlib import Path
 import random
 import sys
+from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 if str(BASE_DIR) not in sys.path:
@@ -32,7 +32,6 @@ def evaluar_precision_tracker(ruido_deg_max: float = 2.0, n_muestras_por_const: 
     top1_aciertos = 0
     top3_aciertos = 0
 
-    detalles = []
 
     for c in constelaciones:
         target_id = c["id"]

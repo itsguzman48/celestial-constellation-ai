@@ -5,8 +5,8 @@ coordenadas locales horizontales (Altitud/Azimut) según la ubicación GPS del
 observador y el tiempo sidéreo local (LST).
 """
 
-from datetime import datetime, timezone
 import math
+from datetime import datetime, timezone
 
 
 def fecha_a_dia_juliano(dt: datetime) -> float:

@@ -26,8 +26,9 @@ class ReconocedorConstelaciones:
             for seg in c.get("lineas", []):
                 for p in seg:
                     radios.append(distancia_angular_deg(ra_c, dec_c, p[0], p[1]))
-            # Radio de dispersión característico
-            c["radio_dispersion_deg"] = max(radios) if radios else 10.0
+            # Radio de dispersión acotado a escala típica de constelación
+            r_max = max(radios) if radios else 10.0
+            c["radio_dispersion_deg"] = min(25.0, max(r_max, 5.0))
 
     def clasificar_posicion(
         self, ra_h: float, dec_deg: float, top_k: int = 3
@@ -48,8 +49,8 @@ class ReconocedorConstelaciones:
             # Distancia normalizada al tamaño de la constelación
             dist_norm = dist_centroide / max(radio, 5.0)
 
-            # Similitud gaussiana / decaimiento inverso
-            score = math.exp(-0.5 * (dist_norm**2))
+            # Similitud gaussiana / decaimiento con temperatura calibrada
+            score = math.exp(-2.5 * (dist_norm**2))
             puntuaciones.append((score, dist_centroide, c))
 
         # Ordenar por puntuación descendente

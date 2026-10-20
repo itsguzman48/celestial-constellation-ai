@@ -5,8 +5,8 @@
     "nombre_en": "Andromeda",
     "nombre_latin": "Andromeda",
     "centroide": [
-      7.2879,
-      37.5006
+      0.555,
+      37.9186
     ],
     "lineas": [
       [
@@ -177,8 +177,8 @@
     "nombre_en": "Air Pump",
     "nombre_latin": "Antlia",
     "centroide": [
-      10.3344,
-      -33.8062
+      10.3366,
+      -34.0535
     ],
     "lineas": [
       [
@@ -209,8 +209,8 @@
     "nombre_en": "Bird of Paradise",
     "nombre_latin": "Apus",
     "centroide": [
-      16.2449,
-      -78.3947
+      16.2723,
+      -78.5587
     ],
     "lineas": [
       [
@@ -251,8 +251,8 @@
     "nombre_en": "Aquarius",
     "nombre_latin": "Aquarius",
     "centroide": [
-      22.384,
-      -6.4093
+      22.3809,
+      -6.5314
     ],
     "lineas": [
       [
@@ -403,8 +403,8 @@
     "nombre_en": "Eagle",
     "nombre_latin": "Aquila",
     "centroide": [
-      19.6728,
-      5.254
+      19.6744,
+      5.2752
     ],
     "lineas": [
       [
@@ -505,8 +505,8 @@
     "nombre_en": "Altar",
     "nombre_latin": "Ara",
     "centroide": [
-      17.2119,
-      -55.7843
+      17.2161,
+      -55.8584
     ],
     "lineas": [
       [
@@ -577,8 +577,8 @@
     "nombre_en": "Ram",
     "nombre_latin": "Aries",
     "centroide": [
-      2.131,
-      22.5159
+      2.1243,
+      22.5885
     ],
     "lineas": [
       [
@@ -619,8 +619,8 @@
     "nombre_en": "Charioteer",
     "nombre_latin": "Auriga",
     "centroide": [
-      5.4582,
-      41.8284
+      5.4425,
+      41.9979
     ],
     "lineas": [
       [
@@ -731,8 +731,8 @@
     "nombre_en": "Herdsman",
     "nombre_latin": "Boötes",
     "centroide": [
-      14.469,
-      33.3646
+      14.4633,
+      33.4915
     ],
     "lineas": [
       [
@@ -873,8 +873,8 @@
     "nombre_en": "Graving tool",
     "nombre_latin": "Caelum",
     "centroide": [
-      4.7235,
-      -39.7422
+      4.7299,
+      -39.77
     ],
     "lineas": [
       [
@@ -915,8 +915,8 @@
     "nombre_en": "Giraffe",
     "nombre_latin": "Camelopardalis",
     "centroide": [
-      4.8725,
-      65.9242
+      4.7861,
+      66.5703
     ],
     "lineas": [
       [
@@ -997,8 +997,8 @@
     "nombre_en": "Crab",
     "nombre_latin": "Cancer",
     "centroide": [
-      8.7131,
-      18.401
+      8.7114,
+      18.4208
     ],
     "lineas": [
       [
@@ -1049,8 +1049,8 @@
     "nombre_en": "Hunting Dogs",
     "nombre_latin": "Canes Venatici",
     "centroide": [
-      12.7479,
-      39.8362
+      12.7521,
+      39.8695
     ],
     "lineas": [
       [
@@ -1071,8 +1071,8 @@
     "nombre_en": "Great Dog",
     "nombre_latin": "Canis Major",
     "centroide": [
-      6.9385,
-      -21.5744
+      6.9363,
+      -21.6101
     ],
     "lineas": [
       [
@@ -1193,8 +1193,8 @@
     "nombre_en": "Little Dog",
     "nombre_latin": "Canis Minor",
     "centroide": [
-      7.5537,
-      6.7572
+      7.5541,
+      6.7595
     ],
     "lineas": [
       [
@@ -1215,8 +1215,8 @@
     "nombre_en": "Capricorn",
     "nombre_latin": "Capricornus",
     "centroide": [
-      21.0124,
-      -18.6562
+      21.0117,
+      -18.8152
     ],
     "lineas": [
       [
@@ -1327,8 +1327,8 @@
     "nombre_en": "Keel",
     "nombre_latin": "Carina",
     "centroide": [
-      9.6651,
-      -59.4704
+      9.5299,
+      -61.4461
     ],
     "lineas": [
       [
@@ -1519,8 +1519,8 @@
     "nombre_en": "Cassiopeia",
     "nombre_latin": "Cassiopeia",
     "centroide": [
-      1.0201,
-      59.7248
+      0.9956,
+      59.9442
     ],
     "lineas": [
       [
@@ -1571,8 +1571,8 @@
     "nombre_en": "Centaur",
     "nombre_latin": "Centaurus",
     "centroide": [
-      13.3477,
-      -48.1421
+      13.4033,
+      -48.9949
     ],
     "lineas": [
       [
@@ -1733,8 +1733,8 @@
     "nombre_en": "Cepheus",
     "nombre_latin": "Cepheus",
     "centroide": [
-      21.9748,
-      63.8571
+      21.9025,
+      64.3091
     ],
     "lineas": [
       [
@@ -1855,8 +1855,8 @@
     "nombre_en": "Whale",
     "nombre_latin": "Cetus",
     "centroide": [
-      2.0685,
-      -2.4831
+      2.0794,
+      -2.5343
     ],
     "lineas": [
       [
@@ -2017,8 +2017,8 @@
     "nombre_en": "Chamaeleon",
     "nombre_latin": "Chamaeleon",
     "centroide": [
-      11.019,
-      -78.875
+      10.9963,
+      -79.3998
     ],
     "lineas": [
       [
@@ -2079,8 +2079,8 @@
     "nombre_en": "Compass",
     "nombre_latin": "Circinus",
     "centroide": [
-      15.0246,
-      -62.018
+      15.0552,
+      -62.0996
     ],
     "lineas": [
       [
@@ -2111,8 +2111,8 @@
     "nombre_en": "Dove",
     "nombre_latin": "Columba",
     "centroide": [
-      5.843,
-      -35.8969
+      5.8419,
+      -35.9505
     ],
     "lineas": [
       [
@@ -2163,8 +2163,8 @@
     "nombre_en": "Berenice's Hair",
     "nombre_latin": "Coma Berenices",
     "centroide": [
-      13.0028,
-      25.3886
+      13.0069,
+      25.4708
     ],
     "lineas": [
       [
@@ -2195,8 +2195,8 @@
     "nombre_en": "Southern Crown",
     "nombre_latin": "Corona Austrina",
     "centroide": [
-      19.0312,
-      -40.0064
+      19.0348,
+      -40.0343
     ],
     "lineas": [
       [
@@ -2277,8 +2277,8 @@
     "nombre_en": "Northern Crown",
     "nombre_latin": "Corona Borealis",
     "centroide": [
-      15.7212,
-      27.6112
+      15.7221,
+      27.6398
     ],
     "lineas": [
       [
@@ -2349,8 +2349,8 @@
     "nombre_en": "Crow",
     "nombre_latin": "Corvus",
     "centroide": [
-      12.3315,
-      -20.7496
+      12.3323,
+      -20.7694
     ],
     "lineas": [
       [
@@ -2411,8 +2411,8 @@
     "nombre_en": "Cup",
     "nombre_latin": "Crater",
     "centroide": [
-      11.4016,
-      -16.8094
+      11.4026,
+      -16.8404
     ],
     "lineas": [
       [
@@ -2513,8 +2513,8 @@
     "nombre_en": "Cross",
     "nombre_latin": "Crux",
     "centroide": [
-      12.5026,
-      -59.6625
+      12.5027,
+      -59.6951
     ],
     "lineas": [
       [
@@ -2545,8 +2545,8 @@
     "nombre_en": "Swan",
     "nombre_latin": "Cygnus",
     "centroide": [
-      20.1307,
-      40.6057
+      20.1663,
+      40.8935
     ],
     "lineas": [
       [
@@ -2637,8 +2637,8 @@
     "nombre_en": "Dolphin",
     "nombre_latin": "Delphinus",
     "centroide": [
-      20.6756,
-      14.931
+      20.6753,
+      14.9336
     ],
     "lineas": [
       [
@@ -2699,8 +2699,8 @@
     "nombre_en": "Goldfish",
     "nombre_latin": "Dorado",
     "centroide": [
-      5.2634,
-      -59.9412
+      5.1955,
+      -60.2076
     ],
     "lineas": [
       [
@@ -2781,8 +2781,8 @@
     "nombre_en": "Dragon",
     "nombre_latin": "Draco",
     "centroide": [
-      16.8415,
-      62.5241
+      16.9721,
+      65.2345
     ],
     "lineas": [
       [
@@ -2943,8 +2943,8 @@
     "nombre_en": "Colt",
     "nombre_latin": "Equuleus",
     "centroide": [
-      21.2297,
-      8.8483
+      21.2298,
+      8.8492
     ],
     "lineas": [
       [
@@ -2975,8 +2975,8 @@
     "nombre_en": "Eridanus",
     "nombre_latin": "Eridanus",
     "centroide": [
-      3.4791,
-      -25.7669
+      3.5529,
+      -26.1951
     ],
     "lineas": [
       [
@@ -3247,8 +3247,8 @@
     "nombre_en": "Furnace",
     "nombre_latin": "Fornax",
     "centroide": [
-      2.7281,
-      -30.7741
+      2.7275,
+      -30.9206
     ],
     "lineas": [
       [
@@ -3279,8 +3279,8 @@
     "nombre_en": "Twins",
     "nombre_latin": "Gemini",
     "centroide": [
-      7.0985,
-      23.6922
+      7.089,
+      23.8455
     ],
     "lineas": [
       [
@@ -3401,8 +3401,8 @@
     "nombre_en": "Crane",
     "nombre_latin": "Grus",
     "centroide": [
-      22.4465,
-      -45.0064
+      22.4263,
+      -45.1025
     ],
     "lineas": [
       [
@@ -3493,8 +3493,8 @@
     "nombre_en": "Hercules",
     "nombre_latin": "Hercules",
     "centroide": [
-      16.9673,
-      33.1334
+      16.9877,
+      33.4419
     ],
     "lineas": [
       [
@@ -3675,8 +3675,8 @@
     "nombre_en": "Clock",
     "nombre_latin": "Horologium",
     "centroide": [
-      2.9355,
-      -54.1628
+      2.9568,
+      -54.407
     ],
     "lineas": [
       [
@@ -3737,8 +3737,8 @@
     "nombre_en": "Sea Serpent",
     "nombre_latin": "Hydra",
     "centroide": [
-      10.2681,
-      -9.0812
+      10.113,
+      -9.9782
     ],
     "lineas": [
       [
@@ -3929,8 +3929,8 @@
     "nombre_en": "Hydrus",
     "nombre_latin": "Hydrus",
     "centroide": [
-      2.3859,
-      -69.6449
+      2.3762,
+      -70.0486
     ],
     "lineas": [
       [
@@ -3991,8 +3991,8 @@
     "nombre_en": "Indian",
     "nombre_latin": "Indus",
     "centroide": [
-      21.114,
-      -53.2217
+      21.0953,
+      -53.4475
     ],
     "lineas": [
       [
@@ -4053,8 +4053,8 @@
     "nombre_en": "Lizard",
     "nombre_latin": "Lacerta",
     "centroide": [
-      22.4459,
-      46.1489
+      22.4436,
+      46.1652
     ],
     "lineas": [
       [
@@ -4165,8 +4165,8 @@
     "nombre_en": "Lion",
     "nombre_latin": "Leo",
     "centroide": [
-      10.5656,
-      18.9254
+      10.5715,
+      19.1832
     ],
     "lineas": [
       [
@@ -4267,8 +4267,8 @@
     "nombre_en": "Little Lion",
     "nombre_latin": "Leo Minor",
     "centroide": [
-      10.3512,
-      35.1568
+      10.3538,
+      35.2843
     ],
     "lineas": [
       [
@@ -4329,8 +4329,8 @@
     "nombre_en": "Hare",
     "nombre_latin": "Lepus",
     "centroide": [
-      5.5255,
-      -17.5768
+      5.5263,
+      -17.6305
     ],
     "lineas": [
       [
@@ -4441,8 +4441,8 @@
     "nombre_en": "Balance",
     "nombre_latin": "Libra",
     "centroide": [
-      15.3195,
-      -18.5491
+      15.3143,
+      -18.6029
     ],
     "lineas": [
       [
@@ -4513,8 +4513,8 @@
     "nombre_en": "Wolf",
     "nombre_latin": "Lupus",
     "centroide": [
-      15.4155,
-      -41.8494
+      15.4348,
+      -41.9735
     ],
     "lineas": [
       [
@@ -4645,8 +4645,8 @@
     "nombre_en": "Lynx",
     "nombre_latin": "Lynx",
     "centroide": [
-      8.1574,
-      46.0183
+      8.3218,
+      46.9846
     ],
     "lineas": [
       [
@@ -4717,8 +4717,8 @@
     "nombre_en": "Lyre",
     "nombre_latin": "Lyra",
     "centroide": [
-      18.7962,
-      36.6511
+      18.7989,
+      36.6636
     ],
     "lineas": [
       [
@@ -4799,8 +4799,8 @@
     "nombre_en": "Mensa",
     "nombre_latin": "Mensa",
     "centroide": [
-      5.3531,
-      -74.7705
+      5.3367,
+      -74.8712
     ],
     "lineas": [
       [
@@ -4841,8 +4841,8 @@
     "nombre_en": "Microscope",
     "nombre_latin": "Microscopium",
     "centroide": [
-      21.0615,
-      -36.6016
+      21.064,
+      -36.6457
     ],
     "lineas": [
       [
@@ -4903,8 +4903,8 @@
     "nombre_en": "Unicorn",
     "nombre_latin": "Monoceros",
     "centroide": [
-      6.9339,
-      0.0771
+      6.9324,
+      0.0781
     ],
     "lineas": [
       [
@@ -4995,8 +4995,8 @@
     "nombre_en": "Fly",
     "nombre_latin": "Musca",
     "centroide": [
-      12.5755,
-      -69.4697
+      12.5594,
+      -69.5444
     ],
     "lineas": [
       [
@@ -5067,8 +5067,8 @@
     "nombre_en": "Level",
     "nombre_latin": "Norma",
     "centroide": [
-      16.2364,
-      -48.0283
+      16.2352,
+      -48.0543
     ],
     "lineas": [
       [
@@ -5119,8 +5119,8 @@
     "nombre_en": "Octant",
     "nombre_latin": "Octans",
     "centroide": [
-      19.6359,
-      -80.8132
+      20.9661,
+      -83.5781
     ],
     "lineas": [
       [
@@ -5161,8 +5161,8 @@
     "nombre_en": "Ophiuchus",
     "nombre_latin": "Ophiuchus",
     "centroide": [
-      16.9493,
-      -7.4467
+      16.9486,
+      -7.5289
     ],
     "lineas": [
       [
@@ -5343,8 +5343,8 @@
     "nombre_en": "Orion",
     "nombre_latin": "Orion",
     "centroide": [
-      5.4489,
-      7.0797
+      5.4464,
+      7.1297
     ],
     "lineas": [
       [
@@ -5595,8 +5595,8 @@
     "nombre_en": "Peacock",
     "nombre_latin": "Pavo",
     "centroide": [
-      19.4468,
-      -65.6052
+      19.4157,
+      -66.5998
     ],
     "lineas": [
       [
@@ -5707,8 +5707,8 @@
     "nombre_en": "Pegasus",
     "nombre_latin": "Pegasus",
     "centroide": [
-      19.4293,
-      20.7523
+      22.8527,
+      21.0526
     ],
     "lineas": [
       [
@@ -5859,8 +5859,8 @@
     "nombre_en": "Perseus",
     "nombre_latin": "Perseus",
     "centroide": [
-      3.3814,
-      44.9581
+      3.3987,
+      45.212
     ],
     "lineas": [
       [
@@ -6101,8 +6101,8 @@
     "nombre_en": "Phoenix",
     "nombre_latin": "Phoenix",
     "centroide": [
-      0.9902,
-      -47.0181
+      0.9797,
+      -47.2403
     ],
     "lineas": [
       [
@@ -6183,8 +6183,8 @@
     "nombre_en": "Painter",
     "nombre_latin": "Pictor",
     "centroide": [
-      6.0631,
-      -56.3353
+      6.0242,
+      -56.4831
     ],
     "lineas": [
       [
@@ -6215,8 +6215,8 @@
     "nombre_en": "Fishes",
     "nombre_latin": "Pisces",
     "centroide": [
-      10.5531,
-      9.6009
+      0.6284,
+      9.8724
     ],
     "lineas": [
       [
@@ -6457,8 +6457,8 @@
     "nombre_en": "Southern Fish",
     "nombre_latin": "Piscis Austrinus",
     "centroide": [
-      22.4217,
-      -31.592
+      22.4247,
+      -31.7717
     ],
     "lineas": [
       [
@@ -6559,8 +6559,8 @@
     "nombre_en": "Poop Deck",
     "nombre_latin": "Puppis",
     "centroide": [
-      7.7371,
-      -30.0992
+      7.7447,
+      -30.1682
     ],
     "lineas": [
       [
@@ -6681,8 +6681,8 @@
     "nombre_en": "Compass",
     "nombre_latin": "Pyxis",
     "centroide": [
-      8.6153,
-      -34.1171
+      8.6253,
+      -34.174
     ],
     "lineas": [
       [
@@ -6723,8 +6723,8 @@
     "nombre_en": "Net",
     "nombre_latin": "Reticulum",
     "centroide": [
-      4.0577,
-      -61.9958
+      4.0689,
+      -62.0331
     ],
     "lineas": [
       [
@@ -6775,8 +6775,8 @@
     "nombre_en": "Arrow",
     "nombre_latin": "Sagitta",
     "centroide": [
-      19.7835,
-      18.4308
+      19.7832,
+      18.4368
     ],
     "lineas": [
       [
@@ -6817,8 +6817,8 @@
     "nombre_en": "Archer",
     "nombre_latin": "Sagittarius",
     "centroide": [
-      18.9944,
-      -27.4247
+      18.9939,
+      -27.6042
     ],
     "lineas": [
       [
@@ -7119,8 +7119,8 @@
     "nombre_en": "Scorpion",
     "nombre_latin": "Scorpius",
     "centroide": [
-      16.8617,
-      -33.5216
+      16.8147,
+      -33.8625
     ],
     "lineas": [
       [
@@ -7261,8 +7261,8 @@
     "nombre_en": "Sculptor",
     "nombre_latin": "Sculptor",
     "centroide": [
-      19.7974,
-      -31.4167
+      23.8042,
+      -31.6986
     ],
     "lineas": [
       [
@@ -7303,8 +7303,8 @@
     "nombre_en": "Shield",
     "nombre_latin": "Scutum",
     "centroide": [
-      18.641,
-      -9.1526
+      18.6421,
+      -9.1556
     ],
     "lineas": [
       [
@@ -7355,8 +7355,8 @@
     "nombre_en": "Serpent",
     "nombre_latin": "Serpens Cauda",
     "centroide": [
-      15.7981,
-      12.0252
+      15.7987,
+      12.0458
     ],
     "lineas": [
       [
@@ -7447,8 +7447,8 @@
     "nombre_en": "Serpent",
     "nombre_latin": "Serpens Cauda",
     "centroide": [
-      18.0144,
-      -8.4024
+      18.0199,
+      -8.4684
     ],
     "lineas": [
       [
@@ -7509,8 +7509,8 @@
     "nombre_en": "Sextant",
     "nombre_latin": "Sextans",
     "centroide": [
-      10.2283,
-      -3.7828
+      10.2295,
+      -3.7923
     ],
     "lineas": [
       [
@@ -7551,8 +7551,8 @@
     "nombre_en": "Bull",
     "nombre_latin": "Taurus",
     "centroide": [
-      4.2183,
-      14.2485
+      4.2036,
+      14.4099
     ],
     "lineas": [
       [
@@ -7673,8 +7673,8 @@
     "nombre_en": "Telescope",
     "nombre_latin": "Telescopium",
     "centroide": [
-      18.3917,
-      -46.7405
+      18.3904,
+      -46.7543
     ],
     "lineas": [
       [
@@ -7705,8 +7705,8 @@
     "nombre_en": "Triangle",
     "nombre_latin": "Triangulum",
     "centroide": [
-      2.1108,
-      32.8044
+      2.1071,
+      32.8306
     ],
     "lineas": [
       [
@@ -7747,8 +7747,8 @@
     "nombre_en": "Southern Triangle",
     "nombre_latin": "Triangulum Australe",
     "centroide": [
-      16.0151,
-      -67.046
+      16.0037,
+      -67.2929
     ],
     "lineas": [
       [
@@ -7789,8 +7789,8 @@
     "nombre_en": "Toucan",
     "nombre_latin": "Tucana",
     "centroide": [
-      15.4855,
-      -62.812
+      23.4586,
+      -63.4128
     ],
     "lineas": [
       [
@@ -7861,8 +7861,8 @@
     "nombre_en": "Big Dipper",
     "nombre_latin": "Ursa Major",
     "centroide": [
-      10.9931,
-      52.3098
+      11.0194,
+      53.8986
     ],
     "lineas": [
       [
@@ -8083,8 +8083,8 @@
     "nombre_en": "Little Dipper",
     "nombre_latin": "Ursa Minor",
     "centroide": [
-      15.0931,
-      78.8132
+      15.755,
+      79.0965
     ],
     "lineas": [
       [
@@ -8165,8 +8165,8 @@
     "nombre_en": "Sails",
     "nombre_latin": "Vela",
     "centroide": [
-      9.6341,
-      -48.0061
+      9.6379,
+      -48.5062
     ],
     "lineas": [
       [
@@ -8247,8 +8247,8 @@
     "nombre_en": "Virgin",
     "nombre_latin": "Virgo",
     "centroide": [
-      13.1942,
-      -1.2782
+      13.1928,
+      -1.3101
     ],
     "lineas": [
       [
@@ -8379,8 +8379,8 @@
     "nombre_en": "Flying Fish",
     "nombre_latin": "Volans",
     "centroide": [
-      8.0267,
-      -68.0372
+      8.0588,
+      -68.3252
     ],
     "lineas": [
       [
@@ -8451,8 +8451,8 @@
     "nombre_en": "Little Fox",
     "nombre_latin": "Vulpecula",
     "centroide": [
-      19.7886,
-      25.2751
+      19.7841,
+      25.3526
     ],
     "lineas": [
       [
