@@ -24,7 +24,7 @@ export class ConstellationMatcher {
           }
         }
       }
-      c.radioDispersion = maxDist;
+      c.radioDispersion = Math.min(25.0, Math.max(maxDist, 5.0));
     }
   }
 
@@ -38,7 +38,7 @@ export class ConstellationMatcher {
 
       // Afinidad mediante kernel gaussiano sobre distancia esférica normalizada
       const distNorm = dist / Math.max(radio, 4.0);
-      const score = Math.exp(-0.5 * (distNorm * distNorm));
+      const score = Math.exp(-2.5 * (distNorm * distNorm));
 
       scores.push({
         score,

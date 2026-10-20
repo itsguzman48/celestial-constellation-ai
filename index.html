@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Celestial Constellation AI — Bóveda Celeste & Star Pattern Tracker</title>
+  <meta name="description" content="Visualizador astrométrico interactivo en tiempo real y reconocedor inteligente de constelaciones basado en patrones angulares (Star Tracker).">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <div class="brand-icon">✨</div>
+      <div>
+        <h1 class="brand-title">Celestial Constellation AI</h1>
+        <div class="brand-sub">Astrometría en Tiempo Real & Inferencia de Patrones Celestes</div>
+      </div>
+    </div>
+
+    <div class="telemetry-badges">
+      <div class="badge">
+        <span>📍 Ubicación:</span> <b id="badgeUbicacion">Bilbao (43.3° N)</b>
+      </div>
+      <div class="badge">
+        <span>⏱️ LST:</span> <b id="badgeLST">--:-- h</b>
+      </div>
+      <div class="badge">
+        <span>⭐ Estrellas:</span> <b id="badgeEstrellas">5.188</b>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="canvas-wrapper">
+      <canvas id="skyCanvas"></canvas>
+      <div id="skyTooltip" class="sky-tooltip"></div>
+    </div>
+
+    <aside class="sidebar">
+      <!-- Módulo de Reconocimiento IA -->
+      <section class="panel-section">
+        <div class="panel-title">
+          <span>🧠</span> Star Tracker & Inferencia IA
+        </div>
+        <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px;">
+          Haz clic en cualquier estrella o región del cielo nocturno para que el algoritmo identifique la constelación correspondiente.
+        </p>
+
+        <div id="aiResultCard" class="ai-card">
+          <div class="ai-header">
+            <div>
+              <div id="aiTargetName" class="ai-target-name">Osa Mayor</div>
+              <div id="aiLatinName" class="ai-latin-name">Ursa Major (UMa)</div>
+            </div>
+            <div id="aiConfidencePill" class="ai-confidence-pill">98.4% Prob.</div>
+          </div>
+
+          <div class="confidence-bar-bg">
+            <div id="aiConfidenceBar" class="confidence-bar-fill" style="width: 98.4%;"></div>
+          </div>
+
+          <div class="ai-metrics-grid">
+            <div class="ai-metric-item">Dist. Centroide: <b id="aiDist">2.4°</b></div>
+            <div class="ai-metric-item">Altitud local: <b id="aiAlt">+54.2°</b></div>
+            <div class="ai-metric-item">Asc. Recta (RA): <b id="aiRA">11.4 h</b></div>
+            <div class="ai-metric-item">Declinación: <b id="aiDec">+55.8°</b></div>
+          </div>
+
+          <div class="ai-alternatives">
+            <div style="font-weight: 600; margin-bottom: 4px; color: var(--accent-blue);">Ranking Top-3 Alternativo:</div>
+            <div id="aiAltContainer">
+              <div class="ai-alt-row"><span>1. Osa Mayor</span> <b>98.4%</b></div>
+              <div class="ai-alt-row"><span>2. Boyero</span> <b>1.2%</b></div>
+              <div class="ai-alt-row"><span>3. Lebreles</span> <b>0.4%</b></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Buscador -->
+      <section class="panel-section">
+        <div class="panel-title">
+          <span>🔍</span> Localizador de Objetos
+        </div>
+        <input 
+          type="text" 
+          id="searchInput" 
+          class="search-box" 
+          placeholder="Buscar constelación (ej. Osa Mayor, Orión)..."
+          list="constelacionesList"
+        >
+        <datalist id="constelacionesList"></datalist>
+      </section>
+
+      <!-- Parámetros Astrométricos -->
+      <section class="panel-section">
+        <div class="panel-title">
+          <span>🧭</span> Ubicación del Observador
+        </div>
+
+        <div class="control-row">
+          <label for="locationSelect">Ciudad de Referencia:</label>
+          <select id="locationSelect">
+            <option value="43.2627,-2.9348">Bilbao (Bizkaia)</option>
+            <option value="40.4168,-3.7038">Madrid</option>
+            <option value="28.3000,-16.5000">Teide (Tenerife / Cielo Oscuro)</option>
+            <option value="35.6762,139.6503">Tokio (Japón)</option>
+            <option value="40.7128,-74.0060">Nueva York (EE.UU.)</option>
+            <option value="-33.8688,151.2093">Sídney (Hemisferio Sur)</option>
+          </select>
+        </div>
+
+        <div class="control-row">
+          <label>Fecha y Hora:</label>
+          <span id="currentTimeLabel" style="font-size: 12px; color: var(--accent-cyan); font-weight: 600;">En Vivo</span>
+        </div>
+
+        <div class="time-slider-container">
+          <input type="range" id="timeSlider" min="-12" max="12" step="0.2" value="0">
+          <div style="display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted);">
+            <span>-12h</span>
+            <span>Hora actual</span>
+            <span>+12h</span>
+          </div>
+        </div>
+
+        <div class="time-actions">
+          <button id="btnResetTime" class="btn-secondary">Restablecer Ahora</button>
+          <button id="btnToggleAnim" class="btn-secondary">▶ Animar Giro</button>
+        </div>
+      </section>
+
+      <!-- Capas Visuales -->
+      <section class="panel-section">
+        <div class="panel-title">
+          <span>👁️</span> Capas del Visor
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <label class="switch-label">
+            <input type="checkbox" id="chkLineas" checked>
+            <span>Líneas de asterismos de constelaciones</span>
+          </label>
+          <label class="switch-label">
+            <input type="checkbox" id="chkNombres" checked>
+            <span>Rótulos de constelaciones</span>
+          </label>
+          <label class="switch-label">
+            <input type="checkbox" id="chkEstrellas" checked>
+            <span>Nombres de estrellas principales</span>
+          </label>
+        </div>
+      </section>
+    </aside>
+  </main>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
