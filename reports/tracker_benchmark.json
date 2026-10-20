@@ -1,0 +1,6 @@
+{
+  "total_pruebas": 890,
+  "ruido_deg_max": 2.0,
+  "precision_top1": 94.04,
+  "precision_top3": 100.0
+}
