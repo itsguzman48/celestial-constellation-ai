@@ -104,7 +104,7 @@ celestial-constellation-ai/
 ├── styles.css                      # Estilos modernos dark/glassmorphism
 ├── vercel.json                     # Configuración de despliegue optimizado para Vercel
 ├── ruff.toml                       # Configuración de linter
-├── requirements.txt                # Dependencias para scripts de datos y testing
+├── requirements-dev.txt            # Dependencias para scripts de datos y testing
 ├── LICENSE                         # Licencia MIT
 └── README.md                       # Documentación principal
 ```
@@ -117,9 +117,7 @@ celestial-constellation-ai/
 La aplicación web está desplegada y disponible públicamente sin necesidad de instalación:
  **[https://celestial-constellation-ai.vercel.app](https://celestial-constellation-ai.vercel.app)**
 
-También incluye la API Serverless operativa en:
-- `GET https://celestial-constellation-ai.vercel.app/api` (Estado del servicio)
-- `POST https://celestial-constellation-ai.vercel.app/api` (Inferencia JSON con payload `{"ra": 11.4, "dec": 55.8}`)
+Toda la computación astrométrica e inferencia k-d tree del Star Tracker se ejecuta directamente en el navegador del cliente con latencia cero a 60 FPS.
 
 ### Opción B: Ejecución Local en tu Equipo
 Puedes probar la web localmente con cualquier servidor estático:
@@ -137,7 +135,7 @@ Abre en tu navegador: `http://localhost:8000`
 ### Opción C: Ejecutar los Tests de Astrometría y Benchmarks
 ```bash
 # Instalar dependencias
-pip install -r requirements.txt
+pip install -r requirements-dev.txt
 
 # Ejecutar suite de pruebas unitarias
 pytest tests/ -v

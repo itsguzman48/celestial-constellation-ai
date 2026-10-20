@@ -1,0 +1,9 @@
+# Ignorar scripts y tests de Python para despliegue estático puro en Vercel
+scripts/
+tests/
+*.py
+src/*.py
+requirements-dev.txt
+ruff.toml
+.pytest_cache/
+.ruff_cache/
