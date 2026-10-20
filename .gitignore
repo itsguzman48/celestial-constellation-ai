@@ -1,0 +1,16 @@
+# Python cache y entornos
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# Datos brutos pesados (se mantienen procesados en data/processed/)
+data/raw/
+*.csv.gz
+
+# Archivos de sistema y editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
