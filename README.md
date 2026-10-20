@@ -115,7 +115,7 @@ celestial-constellation-ai/
 
 ### Opción A: Demostración en Vivo en Vercel (Producción 24/7)
 La aplicación web está desplegada y disponible públicamente sin necesidad de instalación:
-👉 **[https://celestial-constellation-ai.vercel.app](https://celestial-constellation-ai.vercel.app)**
+ **[https://celestial-constellation-ai.vercel.app](https://celestial-constellation-ai.vercel.app)**
 
 También incluye la API Serverless operativa en:
 - `GET https://celestial-constellation-ai.vercel.app/api` (Estado del servicio)
