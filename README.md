@@ -1,12 +1,21 @@
 # Celestial Constellation AI (`celestial-constellation-ai`)
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Vercel%20App-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://celestial-constellation-ai.vercel.app)
 [![CI](https://github.com/itsguzman48/celestial-constellation-ai/actions/workflows/ci.yml/badge.svg)](https://github.com/itsguzman48/celestial-constellation-ai/actions/workflows/ci.yml)
 [![Python Version](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg)](https://www.python.org/)
-[![Deploy with Vercel](https://img.shields.io/badge/Deploy-Vercel-black?style=flat&logo=vercel)](https://vercel.com/)
 [![IAU Constellations](https://img.shields.io/badge/IAU-88%20Constelaciones-teal.svg)](https://www.iau.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 > **Bóveda celeste interactiva en tiempo real y reconocedor inteligente de constelaciones (*Star Pattern Tracker*) basado en astrometría esférica, ingesta de catálogos masivos y visión de patrones angulares.**
+
+<div align="center">
+
+### 🌐 Aplicación Web en Producción (Live Demo)
+[![Open in Vercel](https://img.shields.io/badge/Probar%20en%20Vivo-celestial--constellation--ai.vercel.app-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://celestial-constellation-ai.vercel.app)
+
+*Acceso público 24/7 sin instalación: visualizador interactivo a 60 FPS, rotación celeste en tiempo real e inferencia de constelaciones.*
+
+</div>
 
 ---
 
@@ -70,6 +79,8 @@ celestial-constellation-ai/
 ├── .github/
 │   └── workflows/
 │       └── ci.yml                  # Pipeline de CI con pytest y ruff
+├── api/
+│   └── index.py                    # Endpoint Serverless en Vercel para inferencia HTTP
 ├── data/
 │   └── processed/
 │       ├── stars.json              # 5.188 estrellas visibles con colores B-V y magnitudes
@@ -86,6 +97,7 @@ celestial-constellation-ai/
 │   ├── pattern_matcher.py          # Reconocedor de patrones angulares en Python
 │   └── renderer.js                 # Motor de renderizado en HTML5 Canvas a 60 FPS
 ├── tests/
+│   ├── conftest.py                 # Configuración de entorno de pruebas
 │   └── test_astrometry.py          # Pruebas unitarias de física astrométrica y clasificación
 ├── app.js                          # Orquestador y lógica de eventos de la app web
 ├── index.html                      # Interfaz web del visor celeste nocturno
@@ -101,12 +113,13 @@ celestial-constellation-ai/
 
 ## 5. Puesta en Marcha y Despliegue
 
-### Opción A: Despliegue en Vercel (Recomendado)
-El proyecto está optimizado como aplicación estática de alto rendimiento. Para publicarlo en tu cuenta de Vercel:
+### Opción A: Demostración en Vivo en Vercel (Producción 24/7)
+La aplicación web está desplegada y disponible públicamente sin necesidad de instalación:
+👉 **[https://celestial-constellation-ai.vercel.app](https://celestial-constellation-ai.vercel.app)**
 
-1. Entra en [vercel.com](https://vercel.com/) e inicia sesión con tu cuenta de GitHub.
-2. Pulsa en **Add New... > Project** y selecciona el repositorio `celestial-constellation-ai`.
-3. Haz clic en **Deploy**. En ~20 segundos tendrás tu URL pública (ej. `https://celestial-constellation-ai.vercel.app`).
+También incluye la API Serverless operativa en:
+- `GET https://celestial-constellation-ai.vercel.app/api` (Estado del servicio)
+- `POST https://celestial-constellation-ai.vercel.app/api` (Inferencia JSON con payload `{"ra": 11.4, "dec": 55.8}`)
 
 ### Opción B: Ejecución Local en tu Equipo
 Puedes probar la web localmente con cualquier servidor estático:
