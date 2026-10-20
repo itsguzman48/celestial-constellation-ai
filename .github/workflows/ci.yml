@@ -34,5 +34,7 @@ jobs:
           ruff check .
 
       - name: Run unit tests
+        env:
+          PYTHONPATH: .
         run: |
-          pytest tests/ -v
+          python -m pytest tests/ -v
