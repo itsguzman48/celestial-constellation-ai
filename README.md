@@ -79,8 +79,6 @@ celestial-constellation-ai/
 ├── .github/
 │   └── workflows/
 │       └── ci.yml                  # Pipeline de CI con pytest y ruff
-├── api/
-│   └── index.py                    # Endpoint Serverless en Vercel para inferencia HTTP
 ├── data/
 │   └── processed/
 │       ├── stars.json              # 5.188 estrellas visibles con colores B-V y magnitudes
@@ -91,18 +89,19 @@ celestial-constellation-ai/
 │   ├── build_catalog.py            # Pipeline ETL de ingesta y filtrado del catálogo HYG
 │   └── evaluate_tracker.py         # Benchmarking de robustez con perturbaciones angulares
 ├── src/
-│   ├── astrometry.js               # Conversión RA/Dec -> Alt/Az y proyección estereográfica
-│   ├── astrometry.py               # Motor astrométrico en Python para validación y testing
+│   ├── astrometry.js               # Astrometría J2000, LST y proyección estereográfica 360°
+│   ├── astrometry.py               # Motor astrométrico en Python con transformaciones inversas
 │   ├── constellation_matcher.js    # Star Tracker e inferencia de constelaciones en navegador
 │   ├── pattern_matcher.py          # Reconocedor de patrones angulares en Python
-│   └── renderer.js                 # Motor de renderizado en HTML5 Canvas a 60 FPS
+│   └── renderer.js                 # Motor de renderizado Canvas 360°, brújula HUD y retícula
 ├── tests/
 │   ├── conftest.py                 # Configuración de entorno de pruebas
 │   └── test_astrometry.py          # Pruebas unitarias de física astrométrica y clasificación
-├── app.js                          # Orquestador y lógica de eventos de la app web
-├── index.html                      # Interfaz web del visor celeste nocturno
-├── styles.css                      # Estilos modernos dark/glassmorphism
-├── vercel.json                     # Configuración de despliegue optimizado para Vercel
+├── app.js                          # Control táctil 360°, giroscopio, audio sintético y eventos
+├── index.html                      # PWA / Web app interactiva estilo planetario móvil
+├── styles.css                      # UI glassmorphism, HUD militar/aeronáutico y modo nocturno
+├── vercel.json                     # Configuración de despliegue estático optimizado en CDN
+├── .vercelignore                   # Exclusión de scripts offline para compilación limpia
 ├── ruff.toml                       # Configuración de linter
 ├── requirements-dev.txt            # Dependencias para scripts de datos y testing
 ├── LICENSE                         # Licencia MIT
@@ -111,7 +110,21 @@ celestial-constellation-ai/
 
 ---
 
-## 5. Puesta en Marcha y Despliegue
+## 5. Experiencia Móvil & Navegación Estilo Android Planetarium
+
+La aplicación implementa una arquitectura de visor celeste 360° inspirada en aplicaciones móviles nativas de astronomía (Stellarium Mobile, Star Walk, SkyView):
+
+- **Navegación 360° Libre (Pan & Tilt):** Giro horizontal azimutal continuo (0° a 360°) y elevación vertical (-85° a +88°) con inercia cinética mediante arrastre de ratón o deslizamiento táctil con un dedo.
+- **Brújula Giroscópica (`DeviceOrientation API`):** Al activar el modo brújula en un smartphone o tablet, el visor sincroniza automáticamente la orientación en tiempo real con los sensores del dispositivo (acelerómetro y magnetómetro), permitiendo apuntar el móvil al cielo físico.
+- **Cinta HUD Azimutal Superior:** Indicador estilo aviación con graduaciones grado a grado, marcadores cardinales destacados (N, NE, E, SE, S, SO, O, NO) y rumbo digital en tiempo real.
+- **Retícula de Puntería con Inferencia en Vivo:** Viewfinder central con brackets holográficos que analiza y clasifica instantáneamente cualquier estrella o constelación centrada en el eje de visión.
+- **Modo Nocturno Rojo (OLED Stargazing):** Conmutador scotopic en un solo clic que vira todo el visor a luz roja profunda para preservar la adaptación visual a la oscuridad en observación astronómica de campo.
+- **Efectos de Audio Sintético (Web Audio API):** Respuesta auditiva procedural para fijación de objetivos y retroalimentación táctil sin dependencias de audio externas.
+- **Drawer Desplegable Móvil:** Interfaz adaptativa con panel inferior deslizable para pantallas táctiles y vista completa de pantalla en dispositivos móviles.
+
+---
+
+## 6. Puesta en Marcha y Despliegue
 
 ### Opción A: Demostración en Vivo en Vercel (Producción 24/7)
 La aplicación web está desplegada y disponible públicamente sin necesidad de instalación:
@@ -146,7 +159,7 @@ python scripts/evaluate_tracker.py
 
 ---
 
-## 6. Perfil de Autoría
+## 7. Perfil de Autoría
 
 Desarrollado por **Íñigo Guzmán** ([@itsguzman48](https://github.com/itsguzman48)).
 
@@ -155,6 +168,6 @@ Desarrollado por **Íñigo Guzmán** ([@itsguzman48](https://github.com/itsguzma
 
 ---
 
-## 7. Licencia
+## 8. Licencia
 
 Este proyecto está bajo la [Licencia MIT](LICENSE).

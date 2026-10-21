@@ -2,52 +2,133 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Celestial Constellation AI — Bóveda Celeste & Star Pattern Tracker</title>
-  <meta name="description" content="Visualizador astrométrico interactivo en tiempo real y reconocedor inteligente de constelaciones basado en patrones angulares (Star Tracker).">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Celestial Constellation AI — Bóveda Celeste 360° & Star Pattern Tracker</title>
+  <meta name="description" content="Visualizador astrométrico interactivo en tiempo real estilo Android con brújula giroscópica 360° y reconocedor inteligente de constelaciones con IA.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
+  <!-- Barra Superior de Navegación y Telemetría -->
   <header>
     <div class="brand">
       <div class="brand-icon">✨</div>
       <div>
         <h1 class="brand-title">Celestial Constellation AI</h1>
-        <div class="brand-sub">Astrometría en Tiempo Real & Inferencia de Patrones Celestes</div>
+        <div class="brand-sub">Visor Estelar 360° · Astrometría en Tiempo Real & Star Tracker IA</div>
       </div>
     </div>
 
+    <!-- Badges de Telemetría -->
     <div class="telemetry-badges">
-      <div class="badge">
-        <span>📍 Ubicación:</span> <b id="badgeUbicacion">Bilbao (43.3° N)</b>
+      <div class="badge" id="badgeUbicacionWrapper" title="Ubicación astronómica del observador">
+        <span class="badge-icon">📍</span> <b id="badgeUbicacion">Bilbao (43.3° N)</b>
       </div>
-      <div class="badge">
-        <span>⏱️ LST:</span> <b id="badgeLST">--:-- h</b>
+      <div class="badge" title="Tiempo Sidéreo Local">
+        <span class="badge-icon">⏱️</span> <span>LST:</span> <b id="badgeLST">--:-- h</b>
       </div>
-      <div class="badge">
-        <span>⭐ Estrellas:</span> <b id="badgeEstrellas">5.188</b>
+      <div class="badge" title="Estrellas en el catálogo visible">
+        <span class="badge-icon">⭐</span> <b id="badgeEstrellas">5.188</b>
       </div>
+      <div class="badge hud-coords-badge" id="badgeCamCoords" title="Orientación de la cámara">
+        <span class="badge-icon">🧭</span> <b id="badgeAzAlt">Az: 0° | Alt: +35°</b>
+      </div>
+    </div>
+
+    <!-- Acciones Rápidas del Header -->
+    <div class="header-actions">
+      <button id="btnToggleAudio" class="icon-btn" title="Activar/Silenciar efectos de sonido">
+        <span id="audioIcon">🔊</span>
+      </button>
+      <button id="btnNightMode" class="icon-btn" title="Modo Nocturno Rojo (Preserva adaptación a la oscuridad)">
+        <span>🔴</span>
+      </button>
     </div>
   </header>
 
   <main>
-    <div class="canvas-wrapper">
+    <!-- Contenedor del Lienzo Celeste 360° -->
+    <div class="canvas-wrapper" id="canvasWrapper">
       <canvas id="skyCanvas"></canvas>
+
+      <!-- Banner de Estado de la Brújula / Giroscopio -->
+      <div id="gyroBanner" class="gyro-banner">
+        <span class="gyro-indicator-dot"></span>
+        <span id="gyroBannerText">Brújula Móvil Activa: Mueve tu dispositivo para explorar el cielo</span>
+        <button id="btnDisableGyro" class="btn-micro">Desactivar</button>
+      </div>
+
+      <!-- Píldora HUD de Reconocimiento en el Centro de la Retícula -->
+      <div id="reticleHudPill" class="reticle-hud-pill">
+        <div class="reticle-pill-dot"></div>
+        <div class="reticle-pill-content">
+          <span class="reticle-pill-title" id="reticleConstellationName">Apuntando al cielo...</span>
+          <span class="reticle-pill-sub" id="reticleTelemetry">Centra cualquier estrella</span>
+        </div>
+        <button id="btnLockTarget" class="btn-pill-action" title="Fijar objetivo e inspeccionar métricas">Fijar</button>
+      </div>
+
+      <!-- Barra de Acciones Flotantes (FABs estilo Android) -->
+      <div class="floating-controls">
+        <button id="btnGyro" class="fab-btn" title="Activar Brújula / Giroscopio móvil 360°">
+          <span class="fab-icon">🧭</span>
+          <span class="fab-label">Brújula</span>
+        </button>
+        <button id="btnGps" class="fab-btn" title="Obtener mi ubicación GPS actual">
+          <span class="fab-icon">📍</span>
+          <span class="fab-label">Mi GPS</span>
+        </button>
+        <button id="btnToggleViewMode" class="fab-btn" title="Alternar entre Vista 360° y Bóveda Plana">
+          <span class="fab-icon" id="viewModeIcon">🌐</span>
+          <span class="fab-label" id="viewModeLabel">360°</span>
+        </button>
+        <button id="btnZoomIn" class="fab-btn fab-mini" title="Acercar (Zoom In)">
+          <span class="fab-icon">+</span>
+        </button>
+        <button id="btnZoomOut" class="fab-btn fab-mini" title="Alejar (Zoom Out)">
+          <span class="fab-icon">−</span>
+        </button>
+      </div>
+
+      <!-- Botonera de Orientación Cardinal Rápida -->
+      <div class="cardinal-bar">
+        <button class="btn-cardinal" data-az="0" data-alt="15">N</button>
+        <button class="btn-cardinal" data-az="90" data-alt="15">E</button>
+        <button class="btn-cardinal" data-az="180" data-alt="15">S</button>
+        <button class="btn-cardinal" data-az="270" data-alt="15">O</button>
+        <button class="btn-cardinal" data-az="0" data-alt="85" title="Mirar al Cénit (arriba)">Cénit ↑</button>
+        <button class="btn-cardinal" data-az="180" data-alt="0" title="Mirar al Horizonte">Horiz.</button>
+      </div>
+
+      <!-- Tooltip al pasar el cursor sobre estrellas -->
       <div id="skyTooltip" class="sky-tooltip"></div>
     </div>
 
-    <aside class="sidebar">
+    <!-- Botón para desplegar Drawer en pantallas móviles -->
+    <button id="btnMobileDrawer" class="mobile-drawer-toggle">
+      <span class="drawer-handle"></span>
+      <div class="drawer-peek-info">
+        <span id="drawerPeekTitle">🧠 Star Tracker IA: Osa Mayor</span>
+        <span id="drawerPeekConfidence">98.4%</span>
+      </div>
+    </button>
+
+    <!-- Panel Lateral / Drawer de Telemetría e Inferencia -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header-mobile">
+        <span class="mobile-drawer-close" id="btnCloseDrawer">✕ Cerrar Panel</span>
+      </div>
+
       <!-- Módulo de Reconocimiento IA -->
       <section class="panel-section">
         <div class="panel-title">
           <span>🧠</span> Star Tracker & Inferencia IA
         </div>
-        <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px;">
-          Haz clic en cualquier estrella o región del cielo nocturno para que el algoritmo identifique la constelación correspondiente.
+        <p class="panel-desc">
+          Mueve la cámara en 360° o pulsa en cualquier estrella para que el algoritmo espacial identifique la constelación correspondiente.
         </p>
 
         <div id="aiResultCard" class="ai-card">
@@ -56,7 +137,7 @@
               <div id="aiTargetName" class="ai-target-name">Osa Mayor</div>
               <div id="aiLatinName" class="ai-latin-name">Ursa Major (UMa)</div>
             </div>
-            <div id="aiConfidencePill" class="ai-confidence-pill">98.4% Prob.</div>
+            <div id="aiConfidencePill" class="ai-confidence-pill">98.4% Confianza</div>
           </div>
 
           <div class="confidence-bar-bg">
@@ -71,7 +152,7 @@
           </div>
 
           <div class="ai-alternatives">
-            <div style="font-weight: 600; margin-bottom: 4px; color: var(--accent-blue);">Ranking Top-3 Alternativo:</div>
+            <div class="ai-alt-heading">Ranking Top-3 Probable:</div>
             <div id="aiAltContainer">
               <div class="ai-alt-row"><span>1. Osa Mayor</span> <b>98.4%</b></div>
               <div class="ai-alt-row"><span>2. Boyero</span> <b>1.2%</b></div>
@@ -81,29 +162,32 @@
         </div>
       </section>
 
-      <!-- Buscador -->
+      <!-- Buscador y Guía Automática -->
       <section class="panel-section">
         <div class="panel-title">
-          <span>🔍</span> Localizador de Objetos
+          <span>🔍</span> Localizador y Guía Celeste
         </div>
-        <input 
-          type="text" 
-          id="searchInput" 
-          class="search-box" 
-          placeholder="Buscar constelación (ej. Osa Mayor, Orión)..."
-          list="constelacionesList"
-        >
-        <datalist id="constelacionesList"></datalist>
+        <div class="search-wrapper">
+          <input 
+            type="text" 
+            id="searchInput" 
+            class="search-box" 
+            placeholder="Buscar constelación (ej. Orión, Casiopea)..."
+            list="constelacionesList"
+          >
+          <datalist id="constelacionesList"></datalist>
+          <button id="btnSearchGo" class="btn-search-action" title="Girar cámara hacia la constelación">Ir</button>
+        </div>
       </section>
 
-      <!-- Parámetros Astrométricos -->
+      <!-- Parámetros de Observación -->
       <section class="panel-section">
         <div class="panel-title">
-          <span>🧭</span> Ubicación del Observador
+          <span>🧭</span> Observatorio & Simulación Temporal
         </div>
 
         <div class="control-row">
-          <label for="locationSelect">Ciudad de Referencia:</label>
+          <label for="locationSelect">Observatorio:</label>
           <select id="locationSelect">
             <option value="43.2627,-2.9348">Bilbao (Bizkaia)</option>
             <option value="40.4168,-3.7038">Madrid</option>
@@ -115,15 +199,15 @@
         </div>
 
         <div class="control-row">
-          <label>Fecha y Hora:</label>
-          <span id="currentTimeLabel" style="font-size: 12px; color: var(--accent-cyan); font-weight: 600;">En Vivo</span>
+          <label>Tiempo Astronómico:</label>
+          <span id="currentTimeLabel" class="time-label">En Vivo</span>
         </div>
 
         <div class="time-slider-container">
           <input type="range" id="timeSlider" min="-12" max="12" step="0.2" value="0">
-          <div style="display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted);">
+          <div class="slider-marks">
             <span>-12h</span>
-            <span>Hora actual</span>
+            <span>Ahora</span>
             <span>+12h</span>
           </div>
         </div>
@@ -134,16 +218,16 @@
         </div>
       </section>
 
-      <!-- Capas Visuales -->
+      <!-- Capas del Visor -->
       <section class="panel-section">
         <div class="panel-title">
-          <span>👁️</span> Capas del Visor
+          <span>👁️</span> Capas del Visor & Sensores
         </div>
 
-        <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div class="switches-list">
           <label class="switch-label">
             <input type="checkbox" id="chkLineas" checked>
-            <span>Líneas de asterismos de constelaciones</span>
+            <span>Líneas de constelaciones (asterismos)</span>
           </label>
           <label class="switch-label">
             <input type="checkbox" id="chkNombres" checked>
@@ -152,6 +236,14 @@
           <label class="switch-label">
             <input type="checkbox" id="chkEstrellas" checked>
             <span>Nombres de estrellas principales</span>
+          </label>
+          <label class="switch-label">
+            <input type="checkbox" id="chkHorizonte" checked>
+            <span>Línea de horizonte y terreno 360°</span>
+          </label>
+          <label class="switch-label">
+            <input type="checkbox" id="chkHUD" checked>
+            <span>Cinta azimutal de brújula superior</span>
           </label>
         </div>
       </section>

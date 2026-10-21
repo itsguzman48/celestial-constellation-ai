@@ -2,7 +2,7 @@
 
 Implementa la física de conversión de coordenadas ecuatoriales (J2000 RA/Dec) a
 coordenadas locales horizontales (Altitud/Azimut) según la ubicación GPS del
-observador y el tiempo sidéreo local (LST).
+observador y el tiempo sidéreo local (LST), así como la transformación inversa.
 """
 
 import math
@@ -33,7 +33,6 @@ def fecha_a_dia_juliano(dt: datetime) -> float:
 def calcular_gmst(jd: float) -> float:
     """Calcula el Tiempo Sidéreo Medio de Greenwich (GMST) en grados (0..360)."""
     t = (jd - 2451545.0) / 36525.0
-    # Fórmula IAU-82 / Meeus
     gmst = 280.46061837 + 360.98564736629 * (jd - 2451545.0) + 0.000387933 * (t**2) - (t**3) / 38710000.0
     return gmst % 360.0
 
@@ -59,30 +58,47 @@ def ecuatorial_a_horizontal(
         azimut_deg: Ángulo en el plano horizontal medido desde el Norte (0° N, 90° E, 180° S, 270° O).
     """
     lst_horas = calcular_lst(dt, longitud_deg)
-    h_horas = lst_horas - ra_horas  # Ángulo horario
+    h_horas = lst_horas - ra_horas
     h_rad = math.radians(h_horas * 15.0)
 
     dec_rad = math.radians(dec_deg)
     lat_rad = math.radians(latitud_deg)
 
-    # Seno de la altitud
     sin_alt = math.sin(lat_rad) * math.sin(dec_rad) + math.cos(lat_rad) * math.cos(dec_rad) * math.cos(h_rad)
     sin_alt = max(-1.0, min(1.0, sin_alt))
     alt_rad = math.asin(sin_alt)
 
-    # Componentes para el Azimut (convención astronómica: 0° Norte, 90° Este)
-    cos_alt = math.cos(alt_rad)
-    if cos_alt < 1e-7:
-        # En el cenit o nadir exacto, azimut arbitrario
-        return math.degrees(alt_rad), 0.0
-
+    # Componentes para el Azimut (0° Norte, 90° Este)
     sin_az = -math.cos(dec_rad) * math.sin(h_rad)
-    cos_az = (math.sin(dec_rad) - math.sin(lat_rad) * math.sin(alt_rad)) / (math.cos(lat_rad) * cos_alt)
+    cos_az = (math.sin(dec_rad) - math.sin(lat_rad) * sin_alt) / math.cos(lat_rad)
 
     az_rad = math.atan2(sin_az, cos_az)
     az_deg = (math.degrees(az_rad) + 360.0) % 360.0
 
     return math.degrees(alt_rad), az_deg
+
+
+def horizontal_a_ecuatorial(
+    altitud_deg: float, azimut_deg: float, latitud_deg: float, longitud_deg: float, dt: datetime
+) -> tuple[float, float]:
+    """Transformación inversa: convierte coordenadas locales horizontales (Alt, Az) a ecuatoriales (RA horas, Dec grados)."""
+    lat_rad = math.radians(latitud_deg)
+    alt_rad = math.radians(altitud_deg)
+    az_rad = math.radians(azimut_deg)
+
+    sin_dec = math.sin(lat_rad) * math.sin(alt_rad) + math.cos(lat_rad) * math.cos(alt_rad) * math.cos(az_rad)
+    sin_dec = max(-1.0, min(1.0, sin_dec))
+    dec_rad = math.asin(sin_dec)
+
+    sin_h = -math.sin(az_rad) * math.cos(alt_rad)
+    cos_h = (math.sin(alt_rad) - math.sin(lat_rad) * sin_dec) / math.cos(lat_rad)
+    h_rad = math.atan2(sin_h, cos_h)
+
+    h_horas = math.degrees(h_rad) / 15.0
+    lst_horas = calcular_lst(dt, longitud_deg)
+    ra_horas = (lst_horas - h_horas) % 24.0
+
+    return ra_horas, math.degrees(dec_rad)
 
 
 def distancia_angular_deg(ra1_h: float, dec1_deg: float, ra2_h: float, dec2_deg: float) -> float:
@@ -92,7 +108,6 @@ def distancia_angular_deg(ra1_h: float, dec1_deg: float, ra2_h: float, dec2_deg:
     a2 = math.radians(ra2_h * 15.0)
     d2 = math.radians(dec2_deg)
 
-    # Ley del semiverseno (Haversine esférico)
     delta_a = a2 - a1
     delta_d = d2 - d1
 

@@ -10,6 +10,7 @@ from src.astrometry import (
     distancia_angular_deg,
     ecuatorial_a_horizontal,
     fecha_a_dia_juliano,
+    horizontal_a_ecuatorial,
 )
 from src.pattern_matcher import ReconocedorConstelaciones
 
@@ -25,21 +26,33 @@ def test_fecha_a_dia_juliano_j2000() -> None:
 
 def test_ecuatorial_a_horizontal_polaris() -> None:
     """Verifica que la Estrella Polar (Dec ≈ +89.26°) se observe a una altitud casi idéntica a la latitud del observador."""
-    # Bilbao: Latitud 43.26° N
     lat_bilbao = 43.26
     lon_bilbao = -2.93
     dt = datetime(2026, 10, 20, 22, 0, 0, tzinfo=timezone.utc)
 
-    # Coordenadas aproximadas de Polaris
     ra_polaris = 2.53  # horas
     dec_polaris = 89.26  # grados
 
     alt, az = ecuatorial_a_horizontal(ra_polaris, dec_polaris, lat_bilbao, lon_bilbao, dt)
 
-    # La altitud de la Polar debe diferir de la latitud en menos de 1 grado
     assert alt == pytest.approx(lat_bilbao, abs=1.0)
-    # Su azimut debe apuntar al Norte estricto (cerca de 0° o 360°)
     assert az < 5.0 or az > 355.0
+
+
+def test_transformacion_inversa_astrometrica() -> None:
+    """Verifica la reversibilidad exacta del ciclo RA/Dec -> Alt/Az -> RA/Dec."""
+    lat = 40.4168
+    lon = -3.7038
+    dt = datetime(2026, 10, 21, 23, 30, 0, tzinfo=timezone.utc)
+
+    ra_orig = 5.919  # Betelgeuse (aprox. 5h 55m)
+    dec_orig = 7.407  # +7° 24'
+
+    alt, az = ecuatorial_a_horizontal(ra_orig, dec_orig, lat, lon, dt)
+    ra_recup, dec_recup = horizontal_a_ecuatorial(alt, az, lat, lon, dt)
+
+    assert ra_recup == pytest.approx(ra_orig, abs=0.01)
+    assert dec_recup == pytest.approx(dec_orig, abs=0.01)
 
 
 def test_distancia_angular_misma_estrella() -> None:
