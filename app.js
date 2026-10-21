@@ -329,7 +329,7 @@ function configurarEventosUI() {
           btnGps.style.opacity = "1";
           const lat = pos.coords.latitude;
           const lon = pos.coords.longitude;
-          renderer.setUbicacion(lat, lon);
+          renderer.setUbicacion(lat, lon, "Mi Posición GPS");
           document.getElementById("badgeUbicacion").textContent = `GPS (${lat.toFixed(1)}°, ${lon.toFixed(1)}°)`;
           reproducirSonidoTarget();
         },
@@ -400,8 +400,8 @@ function configurarEventosUI() {
   const locSelect = document.getElementById("locationSelect");
   locSelect.addEventListener("change", (e) => {
     const [lat, lon] = e.target.value.split(",").map(Number);
-    renderer.setUbicacion(lat, lon);
     const ciudad = e.target.options[e.target.selectedIndex].text.split(" (")[0];
+    renderer.setUbicacion(lat, lon, ciudad);
     document.getElementById("badgeUbicacion").textContent = `${ciudad} (${lat.toFixed(1)}° N)`;
   });
 
@@ -466,6 +466,12 @@ function configurarEventosUI() {
   });
 
   // 13. Capas visuales
+  const chkTerreno = document.getElementById("chkTerreno");
+  if (chkTerreno) {
+    chkTerreno.addEventListener("change", (e) => {
+      renderer.mostrarTerreno = e.target.checked;
+    });
+  }
   document.getElementById("chkLineas").addEventListener("change", (e) => {
     renderer.mostrarLineas = e.target.checked;
   });

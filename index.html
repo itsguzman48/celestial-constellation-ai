@@ -101,6 +101,7 @@
         <button class="btn-cardinal" data-az="270" data-alt="15">O</button>
         <button class="btn-cardinal" data-az="0" data-alt="85" title="Mirar al Cénit (arriba)">Cénit ↑</button>
         <button class="btn-cardinal" data-az="180" data-alt="0" title="Mirar al Horizonte">Horiz.</button>
+        <button class="btn-cardinal" data-az="0" data-alt="-65" title="Mirar al Suelo Terrestre / Nadir">Suelo ↓</button>
       </div>
 
       <!-- Tooltip al pasar el cursor sobre estrellas -->
@@ -238,8 +239,12 @@
             <span>Nombres de estrellas principales</span>
           </label>
           <label class="switch-label">
+            <input type="checkbox" id="chkTerreno" checked>
+            <span>Relieve terrestre, paisaje y siluetas 360°</span>
+          </label>
+          <label class="switch-label">
             <input type="checkbox" id="chkHorizonte" checked>
-            <span>Línea de horizonte y terreno 360°</span>
+            <span>Línea de horizonte y postes cardinales</span>
           </label>
           <label class="switch-label">
             <input type="checkbox" id="chkHUD" checked>

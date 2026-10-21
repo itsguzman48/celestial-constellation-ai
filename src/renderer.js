@@ -1,7 +1,8 @@
 /**
  * Motor de renderizado en HTML5 Canvas para la experiencia móvil tipo Android / Planetario.
  * Soporta modo cámara panorámica 360° con giro libre, brújula interactiva, HUD de cinta
- * azimutal, retícula de puntería con reconocimiento en tiempo real y modo noche rojo.
+ * azimutal, retícula de puntería en tiempo real, modo noche rojo y paisaje terrestre
+ * inmersivo con silueta de montañas, observatorio, árboles y plataforma de suelo en el Nadir.
  */
 
 import {
@@ -21,6 +22,7 @@ export class SkyRenderer {
     // Ubicación del observador (Bilbao por defecto)
     this.latDeg = 43.2627;
     this.lonDeg = -2.9348;
+    this.ciudadNombre = "Bilbao (Bizkaia)";
     this.fecha = new Date();
 
     // Modos de visualización
@@ -29,7 +31,7 @@ export class SkyRenderer {
 
     // Estado de la cámara 360°
     this.camAz = 0.0;     // Azimut: 0=N, 90=E, 180=S, 270=O
-    this.camAlt = 35.0;   // Altitud: 0=Horizonte, 90=Cénit, -90=Nadir
+    this.camAlt = 25.0;   // Altitud: 0=Horizonte, 90=Cénit, -90=Nadir
     this.camRoll = 0.0;   // Inclinación
     this.fov = 65.0;      // Campo de visión en grados (25..95)
 
@@ -46,6 +48,7 @@ export class SkyRenderer {
     this.mostrarNombres = true;
     this.mostrarEstrellasNombres = true;
     this.mostrarHorizonte = true;
+    this.mostrarTerreno = true; // Fondo de suelo y paisaje terrestre
     this.mostrarHUD = true;
     this.mostrarReticula = true;
 
@@ -80,9 +83,10 @@ export class SkyRenderer {
     this.radioCielo = Math.min(this.ancho, this.alto) * 0.44;
   }
 
-  setUbicacion(lat, lon) {
+  setUbicacion(lat, lon, ciudad = null) {
     this.latDeg = lat;
     this.lonDeg = lon;
+    if (ciudad) this.ciudadNombre = ciudad;
   }
 
   setFecha(fecha) {
@@ -117,7 +121,6 @@ export class SkyRenderer {
       return;
     }
 
-    // Animación suave hacia el objetivo
     let diffAz = ((azDeg - this.camAz + 540.0) % 360.0) - 180.0;
     let diffAlt = altDeg - this.camAlt;
 
@@ -136,6 +139,20 @@ export class SkyRenderer {
       }
     };
     paso();
+  }
+
+  /**
+   * Perfil orográfico natural del paisaje terrestre alrededor del observador (360°).
+   * Genera colinas, montañas suaves y líneas de cresta realistas.
+   */
+  getAltitudTerreno(azDeg) {
+    const r = (azDeg * Math.PI) / 180.0;
+    const h = 2.4
+      + 1.8 * Math.sin(r * 2.5 + 0.4)
+      + 1.1 * Math.cos(r * 5.0)
+      + 0.5 * Math.sin(r * 11.0 + 1.2)
+      + 0.25 * Math.cos(r * 24.0);
+    return Math.max(0.6, h);
   }
 
   actualizarProyecciones() {
@@ -259,7 +276,7 @@ export class SkyRenderer {
   dibujarModoCamara360(ctx) {
     const rojo = this.modoNoche;
 
-    // 1. Fondo cielo nocturno realista / espacio profundo
+    // 1. Cielo nocturno de fondo con atmósfera
     const gradCielo = ctx.createLinearGradient(0, 0, 0, this.alto);
     if (rojo) {
       gradCielo.addColorStop(0, "#160204");
@@ -267,17 +284,12 @@ export class SkyRenderer {
     } else {
       gradCielo.addColorStop(0, "#050813");
       gradCielo.addColorStop(0.5, "#070b1a");
-      gradCielo.addColorStop(1, "#0a1124");
+      gradCielo.addColorStop(1, "#0a1329");
     }
     ctx.fillStyle = gradCielo;
     ctx.fillRect(0, 0, this.ancho, this.alto);
 
-    // 2. Línea y terreno de horizonte
-    if (this.mostrarHorizonte) {
-      this.dibujarHorizonte360(ctx);
-    }
-
-    // 3. Líneas de constelaciones
+    // 2. Líneas de constelaciones
     if (this.mostrarLineas) {
       for (const item of this.proyeccionesLineas) {
         if (item.segmentos.length === 0) continue;
@@ -317,13 +329,12 @@ export class SkyRenderer {
       }
     }
 
-    // 4. Estrellas con magnitud visual y color espectral
+    // 3. Estrellas
     for (const item of this.proyeccionesEstrellas) {
       const s = item.estrella;
       const esHover = this.estrellaHover && this.estrellaHover.id === s.id;
       const esSeleccionada = this.estrellaSeleccionada && this.estrellaSeleccionada.id === s.id;
 
-      // Escala de tamaño por magnitud
       let radio = Math.max(0.8, (6.5 - s.mag) * 0.72);
       if (esHover || esSeleccionada) radio *= 2.0;
 
@@ -342,7 +353,6 @@ export class SkyRenderer {
       ctx.fill();
       ctx.shadowBlur = 0;
 
-      // Nombres de estrellas principales
       if (this.mostrarEstrellasNombres && (s.mag <= 2.0 || s.name || esHover)) {
         if (s.name) {
           ctx.font = esHover ? "bold 12px Inter, sans-serif" : "10px Inter, sans-serif";
@@ -354,67 +364,352 @@ export class SkyRenderer {
         }
       }
     }
+
+    // 4. Paisaje terrestre sólido, horizonte y elementos del entorno (Cubre el suelo y orienta al observador)
+    if (this.mostrarTerreno || this.mostrarHorizonte) {
+      this.dibujarTerrenoYHorizonte360(ctx);
+    }
   }
 
   /**
-   * Dibuja el horizonte y la tierra en modo panorámico 360°.
+   * Dibuja el suelo terrestre visible, la silueta montañosa en 360°,
+   * elementos arquitectónicos (observatorio, bosque, balizas) y la plataforma Nadir.
    */
-  dibujarHorizonte360(ctx) {
+  dibujarTerrenoYHorizonte360(ctx) {
     const rojo = this.modoNoche;
-    const puntosHorizonte = [];
 
-    // Generar muestras a lo largo del círculo de horizonte (Alt = 0°)
-    for (let az = 0; az <= 360; az += 5) {
-      const pt = proyectarCamara360(0.0, az, this.camAlt, this.camAz, this.camRoll, this.fov, this.ancho, this.alto);
+    // Rango azimutal visible en la pantalla
+    const rangoAz = this.fov * 1.25;
+    const pasoAz = 1.5;
+    const puntosSilueta = [];
+
+    // Muestreo del perfil orográfico a lo largo del horizonte
+    for (let delta = -rangoAz; delta <= rangoAz; delta += pasoAz) {
+      const az = (this.camAz + delta + 360.0) % 360.0;
+      const altTerreno = this.getAltitudTerreno(az);
+      const pt = proyectarCamara360(altTerreno, az, this.camAlt, this.camAz, this.camRoll, this.fov, this.ancho, this.alto);
       if (pt) {
-        puntosHorizonte.push({ az, x: pt.x, y: pt.y });
+        puntosSilueta.push({ x: pt.x, y: pt.y, az, alt: altTerreno });
       }
     }
 
-    if (puntosHorizonte.length > 1) {
-      // Dibujar línea luminosa de horizonte
-      ctx.beginPath();
-      ctx.moveTo(puntosHorizonte[0].x, puntosHorizonte[0].y);
-      for (let i = 1; i < puntosHorizonte.length; i++) {
-        ctx.lineTo(puntosHorizonte[i].x, puntosHorizonte[i].y);
+    // Si estamos mirando casi hacia el Nadir (completamente al suelo)
+    const mirandoHaciaAbajo = this.camAlt < -this.fov * 0.75;
+
+    if (mirandoHaciaAbajo) {
+      // El suelo ocupa la totalidad de la pantalla
+      ctx.fillStyle = rojo ? "#120204" : "#040909";
+      ctx.fillRect(0, 0, this.ancho, this.alto);
+      this.dibujarRedSueloTerrestre(ctx);
+      this.dibujarPlataformaNadir(ctx);
+      return;
+    }
+
+    // Dibujar el polígono de terreno terrestre sólido si la silueta es visible
+    if (puntosSilueta.length > 1) {
+      ctx.save();
+
+      // Gradiente atmosférico y del suelo nocturno
+      let minY = puntosSilueta.reduce((m, p) => Math.min(m, p.y), this.alto);
+      const gradSuelo = ctx.createLinearGradient(0, minY, 0, this.alto);
+      if (rojo) {
+        gradSuelo.addColorStop(0, "rgba(35, 6, 10, 0.96)");
+        gradSuelo.addColorStop(0.2, "rgba(22, 4, 7, 0.98)");
+        gradSuelo.addColorStop(1, "rgba(10, 1, 2, 1.0)");
+      } else {
+        gradSuelo.addColorStop(0, "rgba(14, 26, 32, 0.96)"); // Neblina atmosférica tenue de horizonte
+        gradSuelo.addColorStop(0.15, "rgba(9, 18, 20, 0.98)"); // Relieve montañoso oscuro
+        gradSuelo.addColorStop(1, "rgba(4, 8, 9, 1.0)");       // Suelo firme bajo los pies
       }
-      ctx.lineWidth = 1.8;
-      ctx.strokeStyle = rojo ? "rgba(255, 50, 60, 0.7)" : "rgba(79, 209, 197, 0.6)";
+
+      ctx.beginPath();
+      // Empezar fuera de pantalla por la izquierda abajo
+      ctx.moveTo(-80, this.alto + 120);
+      ctx.lineTo(-80, puntosSilueta[0].y);
+
+      for (const p of puntosSilueta) {
+        ctx.lineTo(p.x, p.y);
+      }
+
+      // Cerrar fuera de pantalla por la derecha abajo
+      ctx.lineTo(this.ancho + 80, puntosSilueta[puntosSilueta.length - 1].y);
+      ctx.lineTo(this.ancho + 80, this.alto + 120);
+      ctx.closePath();
+
+      ctx.fillStyle = gradSuelo;
+      ctx.fill();
+
+      // Línea de cresta montañosa luminosa (borde con resplandor celeste nocturno)
+      ctx.beginPath();
+      ctx.moveTo(puntosSilueta[0].x, puntosSilueta[0].y);
+      for (let i = 1; i < puntosSilueta.length; i++) {
+        ctx.lineTo(puntosSilueta[i].x, puntosSilueta[i].y);
+      }
+      ctx.lineWidth = 1.6;
+      ctx.strokeStyle = rojo ? "rgba(255, 60, 80, 0.6)" : "rgba(79, 209, 197, 0.55)";
       ctx.shadowColor = rojo ? "#ff3344" : "#4fd1c5";
-      ctx.shadowBlur = 8;
+      ctx.shadowBlur = 6;
       ctx.stroke();
       ctx.shadowBlur = 0;
 
-      // Puntos cardinales rotulados sobre el horizonte
-      const cardinales = [
-        { nombre: "NORTE (0°)", az: 0 },
-        { nombre: "NE (45°)", az: 45 },
-        { nombre: "ESTE (90°)", az: 90 },
-        { nombre: "SE (135°)", az: 135 },
-        { nombre: "SUR (180°)", az: 180 },
-        { nombre: "SO (225°)", az: 225 },
-        { nombre: "OESTE (270°)", az: 270 },
-        { nombre: "NO (315°)", az: 315 },
-      ];
+      // Dibujar elementos del paisaje: observatorio, árboles y balizas para orientar la vista
+      this.dibujarLandmarksPaisaje(ctx);
 
-      for (const card of cardinales) {
-        const pt = proyectarCamara360(0.0, card.az, this.camAlt, this.camAz, this.camRoll, this.fov, this.ancho, this.alto);
-        if (pt && pt.visible) {
-          ctx.font = "bold 11px Inter, sans-serif";
-          ctx.textAlign = "center";
-          ctx.fillStyle = card.az === 0
-            ? (rojo ? "#ff8899" : "#fc8181")
-            : (rojo ? "rgba(255, 140, 150, 0.85)" : "rgba(180, 220, 255, 0.85)");
+      // Dibujar red topográfica y plataforma de suelo
+      this.dibujarRedSueloTerrestre(ctx);
+      this.dibujarPlataformaNadir(ctx);
 
-          // Marcador de poste cardinal
-          ctx.beginPath();
-          ctx.arc(pt.x, pt.y, 3, 0, Math.PI * 2);
-          ctx.fill();
+      // Puntos cardinales destacados sobre el relieve terrestre
+      this.dibujarPostesCardinales(ctx);
 
-          ctx.fillText(card.nombre, pt.x, pt.y + 14);
-        }
+      ctx.restore();
+    }
+  }
+
+  /**
+   * Dibuja siluetas arquitectónicas y naturales en el horizonte (360°):
+   * - Az 180° (Sur): Cúpula de observatorio astronómico con telescopio.
+   * - Az 90° (Este): Bosque de coníferas / pinos.
+   * - Az 270° (Oeste): Aerogeneradores con luz nocturna roja sincronizada.
+   * - Az 0° (Norte): Torre de telecomunicaciones con baliza aeronáutica.
+   */
+  dibujarLandmarksPaisaje(ctx) {
+    const rojo = this.modoNoche;
+    const tiempoMs = performance.now();
+    const parpadeo = Math.sin(tiempoMs * 0.004) > 0.3;
+
+    // 1. Cúpula del Observatorio Astronómico hacia el Sur (Azimut 180°)
+    const ptObs = proyectarCamara360(this.getAltitudTerreno(180.0), 180.0, this.camAlt, this.camAz, this.camRoll, this.fov, this.ancho, this.alto);
+    if (ptObs && ptObs.visible) {
+      const radioDom = Math.max(14, 28 * (65 / this.fov));
+
+      // Base cilíndrica del observatorio
+      ctx.fillStyle = rojo ? "#1a0407" : "#081014";
+      ctx.beginPath();
+      ctx.rect(ptObs.x - radioDom * 0.8, ptObs.y - radioDom * 0.4, radioDom * 1.6, radioDom * 0.7);
+      ctx.fill();
+
+      // Cúpula semiesférica
+      ctx.beginPath();
+      ctx.arc(ptObs.x, ptObs.y - radioDom * 0.4, radioDom * 0.8, Math.PI, 0);
+      ctx.fill();
+      ctx.strokeStyle = rojo ? "rgba(255, 70, 90, 0.5)" : "rgba(100, 180, 200, 0.4)";
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      // Ranura de apertura de observación del telescopio
+      ctx.fillStyle = "#020406";
+      ctx.fillRect(ptObs.x - 2, ptObs.y - radioDom * 1.15, 4, radioDom * 0.8);
+
+      // Luz de baliza en la cúpula
+      ctx.fillStyle = rojo ? "#ff3344" : (parpadeo ? "#fc8181" : "#4a151b");
+      ctx.beginPath();
+      ctx.arc(ptObs.x, ptObs.y - radioDom * 1.25, 2.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Etiqueta de referencia
+      ctx.font = "9px Inter, sans-serif";
+      ctx.fillStyle = rojo ? "rgba(255, 120, 130, 0.7)" : "rgba(140, 210, 230, 0.7)";
+      ctx.textAlign = "center";
+      ctx.fillText("🔭 Observatorio Sur", ptObs.x, ptObs.y - radioDom * 1.4);
+    }
+
+    // 2. Torre de Telecomunicaciones en el Norte (Azimut 0°)
+    const ptTorre = proyectarCamara360(this.getAltitudTerreno(0.0), 0.0, this.camAlt, this.camAz, this.camRoll, this.fov, this.ancho, this.alto);
+    if (ptTorre && ptTorre.visible) {
+      const hTorre = Math.max(22, 45 * (65 / this.fov));
+      ctx.strokeStyle = rojo ? "#200508" : "#0c1518";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(ptTorre.x, ptTorre.y);
+      ctx.lineTo(ptTorre.x, ptTorre.y - hTorre);
+      ctx.stroke();
+
+      // Antenas transversales
+      ctx.beginPath();
+      ctx.moveTo(ptTorre.x - 6, ptTorre.y - hTorre * 0.7);
+      ctx.lineTo(ptTorre.x + 6, ptTorre.y - hTorre * 0.7);
+      ctx.moveTo(ptTorre.x - 4, ptTorre.y - hTorre * 0.9);
+      ctx.lineTo(ptTorre.x + 4, ptTorre.y - hTorre * 0.9);
+      ctx.stroke();
+
+      // Luz de baliza estroboscópica roja
+      ctx.fillStyle = parpadeo ? "#ff2233" : "#550005";
+      ctx.beginPath();
+      ctx.arc(ptTorre.x, ptTorre.y - hTorre - 2, 2.5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // 3. Siluetas de Pinos hacia el Este (Azimuts 80° a 105°)
+    const azPinos = [82, 88, 93, 100, 106];
+    for (const azP of azPinos) {
+      const ptP = proyectarCamara360(this.getAltitudTerreno(azP), azP, this.camAlt, this.camAz, this.camRoll, this.fov, this.ancho, this.alto);
+      if (ptP && ptP.visible) {
+        const altPino = Math.max(12, 22 * (65 / this.fov));
+        const anchoPino = altPino * 0.45;
+        ctx.fillStyle = rojo ? "#150305" : "#060f0d";
+        ctx.beginPath();
+        ctx.moveTo(ptP.x, ptP.y - altPino);
+        ctx.lineTo(ptP.x + anchoPino, ptP.y);
+        ctx.lineTo(ptP.x - anchoPino, ptP.y);
+        ctx.closePath();
+        ctx.fill();
       }
     }
+  }
+
+  /**
+   * Dibuja los postes y rótulos cardinales fijos directamente sobre el relieve del terreno.
+   */
+  dibujarPostesCardinales(ctx) {
+    const rojo = this.modoNoche;
+    const cardinales = [
+      { nombre: "NORTE (0°)", az: 0 },
+      { nombre: "NE (45°)", az: 45 },
+      { nombre: "ESTE (90°)", az: 90 },
+      { nombre: "SE (135°)", az: 135 },
+      { nombre: "SUR (180°)", az: 180 },
+      { nombre: "SO (225°)", az: 225 },
+      { nombre: "OESTE (270°)", az: 270 },
+      { nombre: "NO (315°)", az: 315 },
+    ];
+
+    for (const card of cardinales) {
+      const altT = this.getAltitudTerreno(card.az);
+      const pt = proyectarCamara360(altT, card.az, this.camAlt, this.camAz, this.camRoll, this.fov, this.ancho, this.alto);
+      if (pt && pt.visible) {
+        const esNorte = card.az === 0;
+
+        // Marcador luminoso
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, esNorte ? 4 : 3, 0, Math.PI * 2);
+        ctx.fillStyle = esNorte
+          ? (rojo ? "#ff6677" : "#fc8181")
+          : (rojo ? "#ff8899" : "#4fd1c5");
+        ctx.shadowColor = ctx.fillStyle;
+        ctx.shadowBlur = 6;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        // Poste vertical hacia el suelo
+        ctx.beginPath();
+        ctx.moveTo(pt.x, pt.y);
+        ctx.lineTo(pt.x, pt.y + 16);
+        ctx.lineWidth = 1.2;
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.25)";
+        ctx.stroke();
+
+        // Rótulo cardinal
+        ctx.font = esNorte ? "bold 12px Inter, sans-serif" : "bold 10px Inter, sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillStyle = esNorte
+          ? (rojo ? "#ff99aa" : "#fc8181")
+          : (rojo ? "rgba(255, 170, 180, 0.9)" : "rgba(210, 240, 255, 0.9)");
+        ctx.fillText(card.nombre, pt.x, pt.y + 26);
+      }
+    }
+  }
+
+  /**
+   * Dibuja los meridianos del suelo y paralelos de altitud negativa (-15°, -30°, -45°, -60°).
+   */
+  dibujarRedSueloTerrestre(ctx) {
+    const rojo = this.modoNoche;
+    ctx.save();
+    ctx.lineWidth = 0.8;
+    ctx.strokeStyle = rojo ? "rgba(255, 50, 70, 0.12)" : "rgba(79, 209, 197, 0.12)";
+
+    // Paralelos de altitud bajo el suelo
+    const alts = [-15, -30, -45, -60];
+    for (const altNeg of alts) {
+      ctx.beginPath();
+      let empezo = false;
+      for (let az = 0; az <= 360; az += 8) {
+        const pt = proyectarCamara360(altNeg, az, this.camAlt, this.camAz, this.camRoll, this.fov, this.ancho, this.alto);
+        if (pt && pt.visible) {
+          if (!empezo) {
+            ctx.moveTo(pt.x, pt.y);
+            empezo = true;
+          } else {
+            ctx.lineTo(pt.x, pt.y);
+          }
+        }
+      }
+      ctx.stroke();
+    }
+
+    // Meridianos radiales en el suelo cada 45°
+    for (let az = 0; az < 360; az += 45) {
+      const pt1 = proyectarCamara360(-5.0, az, this.camAlt, this.camAz, this.camRoll, this.fov, this.ancho, this.alto);
+      const pt2 = proyectarCamara360(-75.0, az, this.camAlt, this.camAz, this.camRoll, this.fov, this.ancho, this.alto);
+      if (pt1 && pt2 && (pt1.visible || pt2.visible)) {
+        ctx.beginPath();
+        ctx.moveTo(pt1.x, pt1.y);
+        ctx.lineTo(pt2.x, pt2.y);
+        ctx.stroke();
+      }
+    }
+
+    ctx.restore();
+  }
+
+  /**
+   * Plataforma del Observatorio en el Nadir (-90°): aparece cuando el usuario
+   * baja la cámara hacia el suelo para mostrar exactamente el lugar de observación terrestre.
+   */
+  dibujarPlataformaNadir(ctx) {
+    if (this.camAlt > -10.0) return;
+    const rojo = this.modoNoche;
+
+    const ptNadir = proyectarCamara360(-89.9, this.camAz, this.camAlt, this.camRoll, this.fov, this.ancho, this.alto);
+    if (!ptNadir || !ptNadir.visible) return;
+
+    ctx.save();
+    const rBase = Math.max(30, 65 * (65 / this.fov));
+
+    // Círculos concéntricos de la rosa de los vientos en el suelo
+    ctx.beginPath();
+    ctx.arc(ptNadir.x, ptNadir.y, rBase, 0, Math.PI * 2);
+    ctx.fillStyle = rojo ? "rgba(30, 5, 8, 0.85)" : "rgba(8, 20, 24, 0.82)";
+    ctx.fill();
+    ctx.lineWidth = 1.4;
+    ctx.strokeStyle = rojo ? "rgba(255, 60, 80, 0.4)" : "rgba(79, 209, 197, 0.4)";
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(ptNadir.x, ptNadir.y, rBase * 0.5, 0, Math.PI * 2);
+    ctx.strokeStyle = rojo ? "rgba(255, 60, 80, 0.25)" : "rgba(79, 209, 197, 0.25)";
+    ctx.stroke();
+
+    // Cruz central
+    ctx.beginPath();
+    ctx.moveTo(ptNadir.x - rBase, ptNadir.y);
+    ctx.lineTo(ptNadir.x + rBase, ptNadir.y);
+    ctx.moveTo(ptNadir.x, ptNadir.y - rBase);
+    ctx.lineTo(ptNadir.x, ptNadir.y + rBase);
+    ctx.stroke();
+
+    // Marcador central
+    ctx.beginPath();
+    ctx.arc(ptNadir.x, ptNadir.y, 4, 0, Math.PI * 2);
+    ctx.fillStyle = rojo ? "#ff3344" : "#4fd1c5";
+    ctx.fill();
+
+    // Texto de ubicación en el suelo bajo tus pies
+    ctx.font = "bold 11px Inter, sans-serif";
+    ctx.fillStyle = rojo ? "#ff8899" : "#63b3ed";
+    ctx.textAlign = "center";
+    ctx.fillText("📍 TU POSICIÓN EN LA TIERRA", ptNadir.x, ptNadir.y - rBase - 16);
+
+    ctx.font = "10px Inter, sans-serif";
+    ctx.fillStyle = rojo ? "rgba(255, 180, 190, 0.85)" : "rgba(200, 230, 255, 0.85)";
+    ctx.fillText(this.ciudadNombre, ptNadir.x, ptNadir.y - rBase - 4);
+    ctx.fillText(`Lat: ${this.latDeg.toFixed(2)}° N · Lon: ${Math.abs(this.lonDeg).toFixed(2)}° O`, ptNadir.x, ptNadir.y + rBase + 14);
+    ctx.font = "9px Inter, sans-serif";
+    ctx.fillStyle = "rgba(160, 190, 220, 0.6)";
+    ctx.fillText("Suelo Firme · Mira hacia arriba para ver el firmamento", ptNadir.x, ptNadir.y + rBase + 26);
+
+    ctx.restore();
   }
 
   /**
@@ -429,7 +724,6 @@ export class SkyRenderer {
     const startX = this.cx - ribbonW / 2;
     const startY = 12;
 
-    // Fondo translúcido con borde
     ctx.save();
     ctx.fillStyle = rojo ? "rgba(20, 4, 6, 0.88)" : "rgba(8, 14, 28, 0.85)";
     ctx.strokeStyle = rojo ? "rgba(255, 50, 60, 0.35)" : "rgba(79, 209, 197, 0.35)";
@@ -440,7 +734,6 @@ export class SkyRenderer {
     ctx.fill();
     ctx.stroke();
 
-    // Graduaciones de la brújula
     ctx.beginPath();
     ctx.rect(startX, startY, ribbonW, ribbonH);
     ctx.clip();
@@ -489,7 +782,7 @@ export class SkyRenderer {
 
     ctx.restore();
 
-    // Indicador central rojo ▼
+    // Indicador central triangular ▼
     ctx.fillStyle = rojo ? "#ff3344" : "#4fd1c5";
     ctx.beginPath();
     ctx.moveTo(this.cx, startY + ribbonH + 4);
@@ -517,7 +810,6 @@ export class SkyRenderer {
     ctx.fill();
     ctx.stroke();
 
-    // Ángulo hacia el Norte respecto a la vista actual
     const anguloNorteRad = - (this.camAz * Math.PI) / 180.0;
 
     // Aguja Norte (Roja)
@@ -600,13 +892,20 @@ export class SkyRenderer {
   }
 
   /**
-   * Modo bóveda cenital clásica (círculo 180° plano).
+   * Modo bóveda cenital clásica (círculo 180° plano con anillo terrestre exterior).
    */
   dibujarModoPlano(ctx) {
     const rojo = this.modoNoche;
 
-    ctx.fillStyle = rojo ? "#120204" : "#070a12";
+    ctx.fillStyle = rojo ? "#120204" : "#050a09";
     ctx.fillRect(0, 0, this.ancho, this.alto);
+
+    // Anillo exterior que representa la tierra fuera de la bóveda
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(this.cx, this.cy, this.radioCielo + 35, 0, Math.PI * 2);
+    ctx.fillStyle = rojo ? "#1a0407" : "#071210";
+    ctx.fill();
 
     const gradCielo = ctx.createRadialGradient(this.cx, this.cy, 0, this.cx, this.cy, this.radioCielo);
     if (rojo) {
@@ -618,7 +917,6 @@ export class SkyRenderer {
       gradCielo.addColorStop(1, "#04070e");
     }
 
-    ctx.save();
     ctx.beginPath();
     ctx.arc(this.cx, this.cy, this.radioCielo, 0, Math.PI * 2);
     ctx.fillStyle = gradCielo;
@@ -673,7 +971,7 @@ export class SkyRenderer {
       if (this.mostrarEstrellasNombres && (s.mag <= 2.2 || s.name || esHover)) {
         if (s.name) {
           ctx.font = esHover ? "bold 11px Inter, sans-serif" : "9px Inter, sans-serif";
-          ctx.fillStyle = esHover ? "#ffffff" : (rojo ? "rgba(255, 180, 180, 0.75)" : "rgba(220, 230, 255, 0.75)");
+          ctx.fillStyle = esHover ? "#ffffff" : (rojo ? "rgba(255, 180, 180, 0.75)" : "rgba(220, 235, 255, 0.75)");
           ctx.textAlign = "left";
           ctx.fillText(s.name, item.x + 5, item.y - 4);
         }
@@ -713,13 +1011,9 @@ export class SkyRenderer {
     }
   }
 
-  /**
-   * Busca la estrella más cercana a las coordenadas (mouseX, mouseY) del canvas
-   * y calcula las coordenadas celestes (RA/Dec y Alt/Az) en ese punto de la pantalla.
-   */
   buscarObjetoEnPosicion(mouseX, mouseY) {
     let estrellaCercana = null;
-    let minDistEstrella = 16; // Radio de captura táctil cómodo
+    let minDistEstrella = 16;
 
     for (const item of this.proyeccionesEstrellas) {
       const dx = item.x - mouseX;
@@ -732,7 +1026,6 @@ export class SkyRenderer {
     }
 
     if (this.modoVista === "camara360") {
-      // Inversa estereográfica para cámara 360°
       const dxScreen = mouseX - this.cx;
       const dyScreen = -(mouseY - this.cy);
       const rScreen = Math.hypot(dxScreen, dyScreen);
@@ -746,7 +1039,6 @@ export class SkyRenderer {
       const dy = Math.sin(theta) * Math.sin(psi);
       const dz = Math.cos(theta);
 
-      // Reconstruir vector topocéntrico P
       const cAltRad = (this.camAlt * Math.PI) / 180.0;
       const cAzRad = (this.camAz * Math.PI) / 180.0;
 
@@ -783,7 +1075,6 @@ export class SkyRenderer {
         azDeg,
       };
     } else {
-      // Inversa en modo plano
       const dx = mouseX - this.cx;
       const dy = mouseY - this.cy;
       const r = Math.hypot(dx, dy);
